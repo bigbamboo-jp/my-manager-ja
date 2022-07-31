@@ -1,8 +1,14 @@
 {% extends '_base.html' %}
 
-{% block title %}Forbidden (403){% endblock title %}
+{% comment %}{% block title %}Forbidden (403){% endblock title %}{% endcomment %}
+{% block title %}禁止 (403){% endblock title %}
 
 {% block content %}
-<h1>Forbidden (403)</h1>
-<p>CSRF verification failed. Request aborted.</p>
+<!-- <h1>Forbidden (403)</h1> -->
+<h1>禁止 (403)</h1>
+
+<br>
+
+<!-- <p>CSRF verification failed. Request aborted.</p> -->
+<p>CSRF 検証に失敗したため、リクエストは中止されました。</p>
 {% endblock content %}

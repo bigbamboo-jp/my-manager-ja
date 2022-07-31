@@ -1,0 +1,86 @@
+{% extends '_base.html' %}
+
+{% block title %}{{ site_title }}{% endblock %}
+
+{% block content %}
+<h1 id="greeting_message"></h1>
+
+<h6 class="text-info mt-4">記録する</h6>
+<div class="mb-4">
+  <div class="card-group">
+    <div class="card border-info">
+      <div class="card-body">
+        <h4 class="card-title">出席を記録する</h4>
+        <div class="mb-2">
+          {% if entered == True %}
+          <a href="#" class="card-link text-muted" style="font-size: 1.25rem; pointer-events: none;">既に出席しています</a>
+          {% else %}
+          <a href="{% url 's_entry_description' %}" class="card-link" style="font-size: 1.25rem;">記録する</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="card border-info">
+      <div class="card-body">
+        <h4 class="card-title">退席を記録する</h4>
+        <div class="mb-2">
+          {% if entered == True %}
+          <a href="{% url 's_leave_description' %}" class="card-link" style="font-size: 1.25rem;">記録する</a>
+          {% else %}
+          <a href="#" class="card-link text-muted" style="font-size: 1.25rem; pointer-events: none;">出席していません</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h6 class="text-info">データを確認する</h6>
+<div class="mb-2">
+  <div class="card border-info">
+    <div class="card-body">
+      <h4 class="card-title">マイレポート</h4>
+      <p class="card-text">先週の活動記録を確認できます。<br>また、システムに蓄積されているデータからあなたのメンタルの健康状態を分析して表示します。</p>
+      <div>
+        <a href="{% url 's_my_report' %}" class="card-link" style="font-size: 1.25rem;">確認する</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="mb-4">
+  <div class="card border-info">
+    <div class="card-body">
+      <h4 class="card-title">記録帳</h4>
+      <p class="card-text">過去1年間の出席記録を確認できます。<br>また、月ごとの統計データも確認できます。</p>
+      <div>
+        <a href="{% url 's_view_records' %}?page=1" class="card-link" style="font-size: 1.25rem;">確認する</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h6 class="text-info">ヒント</h6>
+<div class="mt-2">
+  <div class="alert alert-info" role="alert">
+    <p class="my-0">ユーザー情報・メールアドレス・パスワードの変更は右上のユーザー名ラベルから行えます。<br>また、利用規約・プライバシーポリシー（提供されている場合）はナビゲーションバーのリンクから確認できます。</p>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+{{ block.super}}
+<script>
+  var greeting_message;
+  var hour = new Date().getHours();
+  if (hour >= 4 && hour < 11) {
+    greeting_message = 'おはようございます';
+  }
+  else if (hour >= 11 && hour < 17) {
+    greeting_message = 'こんにちは';
+  }
+  else {
+    greeting_message = 'こんばんは';
+  }
+  document.getElementById('greeting_message').textContent = greeting_message;
+</script>
+{% endblock %}

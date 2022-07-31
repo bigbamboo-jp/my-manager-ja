@@ -1,0 +1,72 @@
+{% extends '_record_page_base.html' %}
+
+{% block title %}退席を記録する｜{{ site_title }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a class="text-danger text-decoration-none" href="javascript:void(0)" onclick="reset_progress(1); close_page();">&lt; 中止する</a>
+</div>
+
+<h1>退席を記録する</h1>
+
+<br>
+
+<div class="mb-4">
+  <div class="card">
+    <div class="card-body">
+      <p>記録をする前にいくつか質問に答えてください。</p>
+      <hr>
+      <h4 class="my-1">質問｜{{ question.content }}</h4>
+      {% if question.description != None %}
+      <p>{{ question.description | linebreaks }}</p>
+      {% endif %}
+      <form>
+        {% for option in options %}
+        <div class="form-group row mx-0 mt-3 mb-2">
+          <button type="button" class="btn btn-outline-dark btn-block text-left" data-oid="{{ option.pk }}" onclick="select_option(this.dataset.oid);">{{ option.content }}</button>
+        </div>
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if ask_questions_when_entering_and_leaving %}
+<div class="mt-4">
+  <div class="alert alert-success" role="alert">
+    <h5 class="alert-heading my-2">記録時の質問について</h5>
+    <p>記録を行う前にいくつか質問をする場合があります。<br>
+      その質問の回答内容はあなたのメンタルの状態を分析するために使用されます。<br>
+      ※システムには以下の情報が保存され、その他の情報は全て破棄されます。<br>
+      　・メンタルスコア（選択型質問の回答内容をもとに算出される数値・ランク）<br>
+      　・統計情報（個人を特定できない情報）<br>
+      　・組織が独自で追加した入力型質問の回答内容</p>
+    <hr>
+    <p class="mb-0">ヒント｜これまでに蓄積したデータは<a href="{% url 's_my_report' %}" class="alert-link" style="pointer-events: none;">レポート</a>として確認することができます。</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block javascript %}
+{{ block.super}}
+<script>
+  function select_option(option_id) {
+    var end_time = Date.now();
+    var json_data = get_cookie('leave_data');
+    var leave_data = JSON.parse(json_data);
+    var required_time = null;
+    if (0 <= end_time - begin_time <= 1000 * 30) {
+      required_time = String(end_time - begin_time);
+    }
+    leave_data['questions'][leave_data['question_number'].slice(1)] = [option_id, required_time];
+    json_data = JSON.stringify(leave_data);
+    set_cookie('leave_data', json_data);
+    window.location.reload();
+  }
+  var begin_time;
+  window.onload = function () {
+    begin_time = Date.now();
+  };
+</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}ユーザー情報の変更｜{{ site_title }}{% endblock %}
+
+{% block content %}
+<h1>ユーザー情報</h1>
+<br>
+<form method="post">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <br>
+  <button class="btn btn-success" type="submit" style="margin-right: 15px;">ユーザー情報を変更する</button>
+  {% if changed == True %}
+  <p style="display: inline-block;">変更を保存しました。</p>
+  {% elif changed == False %}
+  <p style="display: inline-block;">変更された設定がないため、保存されませんでした。</p>
+  {% endif %}
+</form>
+{% endblock content %}

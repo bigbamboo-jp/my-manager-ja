@@ -1,13 +1,27 @@
 {% extends '_base.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
-{% block title %}Sign up{% endblock %}
+{% block title %}{% trans "Signup" %}｜{{ site_title }}{% endblock %}
 
 {% block content %}
-<h2>Sign up</h2>
+<h1>{% trans "Signup" %}</h1>
+<br>
 <form method="post">
   {% csrf_token %}
   {{ form|crispy }}
-  <button class="btn btn-success" type="submit">Sign up</button>
+  <br>
+  <!-- 日本語表記 -->
+  {% if show_terms_of_use and show_privacy_policy %}
+  <p style="display: inline-block;"><a href="{% url 'terms' %}" target="_blank" rel="noopener noreferrer">利用規約</a>・<a href="{% url 'privacy_policy' %}" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>に同意して、</p>
+  {% elif show_terms_of_use %}
+  <p style="display: inline-block;"><a href="{% url 'terms' %}" target="_blank" rel="noopener noreferrer">利用規約</a>に同意して、</p>
+  {% elif show_privacy_policy %}
+  <p style="display: inline-block;"><a href="{% url 'privacy_policy' %}" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>に同意して、</p>
+  {% endif %}
+  <!-- 日本語表記 -->
+  <button class="btn btn-success" type="submit">{% trans "Sign Up" %}</button>
+  <br><br>
+  <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
 </form>
 {% endblock content %}

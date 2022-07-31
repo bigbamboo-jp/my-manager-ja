@@ -1,0 +1,34 @@
+{% extends '_restricted_page_base.html' %}
+
+{% block title %}アプリケーションの接続｜{{ site_title }}{% endblock %}
+
+{% block content %}
+<h1>アプリケーションの接続</h1>
+
+<br>
+
+<div class="mb-4">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="mb-2">操作の確認</h4>
+      <p>アカウントのデータにアプリケーションがアクセスすることを許可しますか？<br>
+        一度許可すると後から取り消すことはできません。<br>
+        ※「許可する」を押すと、ユーザー認証のために一度ログアウトします。</p>
+      <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger mr-2" type="button" onclick="window.location.href = &quot;{% url 'issue_tokens' %}?finished=2&quot;;">キャンセル</button>
+        <button class="btn btn-success" type="submit">許可する</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4">
+  <div class="alert alert-warning" role="alert">
+    <h5 class="alert-heading my-2">注意</h5>
+    <p>アカウントのデータへのアクセスを許可する際は、そのアプリケーションが信頼できるものであることを確認してください。<br>
+      アプリケーションの中にはあなたのデータを外部に漏洩させるものもあります。<br>
+      ※今後データにアクセスする際は確認画面が表示されません。</p>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,53 @@
+{% extends '_restricted_page_base.html' %}
+
+{% block javascript %}
+{{ block.super}}
+  <!-- crypto-js JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js" integrity="sha256-8L3yX9qPmvWSDIIHB3WGTH4RZusxVA0DDmuAo4LjnOE=" crossorigin="anonymous"></script>
+
+<script>
+  const record_data_encryption_key = {% if request.session.record_data_encryption_key %}'{{ request.session.record_data_encryption_key }}'{% else %} ''{% endif %};
+  function get_cookie(cookie_name) {
+    var cookies = document.cookie;
+    var cookiesArray = cookies.split(';');
+    var json_data;
+    for (var c of cookiesArray) {
+      var cArray = c.trim().split('=');
+      if (cArray[0] == cookie_name) {
+        json_data = decodeURIComponent(cArray[1]);
+        break;
+      }
+    }
+    if (json_data != undefined) {
+      var json_data_hex = CryptoJS.AES.decrypt(json_data, record_data_encryption_key).toString();
+      json_data = '';
+      for (var i = 0; i < json_data_hex.length; i += 2) {
+        json_data += String.fromCharCode(parseInt(json_data_hex.substr(i, 2), 16));
+      }
+    }
+    return json_data;
+  }
+  function set_cookie(cookie_name, json_data) {
+    document.cookie = cookie_name + '=; path=/; max-age=0;';
+    json_data = CryptoJS.AES.encrypt(json_data, record_data_encryption_key).toString();
+    document.cookie = cookie_name + '=' + encodeURIComponent(json_data) + '; path=/;';
+  }
+  function reset_progress(situation) {
+    if (situation == 0) {
+      var cookie_name = 'entry_data';
+    }
+    else if (situation == 1) {
+      var cookie_name = 'leave_data';
+    }
+    document.cookie = cookie_name + '=; path=/; max-age=0;';
+  }
+  function close_page() {
+    if (window.history.length == 1) {
+      window.close();
+    }
+    else {
+      location.replace("{% url 'home' %}");
+    }
+  }
+</script>
+{% endblock %}

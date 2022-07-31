@@ -1,8 +1,18 @@
 {% extends '_base.html' %}
 
-{% block title %}500 Server Error{% endblock %}
+{% comment %}{% block title %}500 Server Error{% endblock %}{% endcomment %}
+{% block title %}500 サーバーエラー{% endblock %}
+
+{% block main %}
+<div class="mb-5"></div>
+{% endblock %}
 
 {% block content %}
-<h1>500 Server Error</h1>
-<p>Looks like something went wrong!</p>
+<!-- <h1>500 Server Error</h1> -->
+<h1>500 サーバーエラー</h1>
+
+<br>
+
+<!-- <p>Looks like something went wrong!</p> -->
+<p>何かがうまくいかなかったようです！</p>
 {% endblock content %}

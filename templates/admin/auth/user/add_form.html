@@ -1,0 +1,12 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block form_top %}
+  <!-- 日本語表記 -->
+  {% if not is_popup %}
+    <p>まずメールアドレスとユーザー名を登録してください。その後詳細情報が編集可能になります。</p>
+  {% else %}
+    <p>メールアドレスとユーザー名を入力してください。</p>
+  {% endif %}
+  <!-- 日本語表記 -->
+{% endblock %}

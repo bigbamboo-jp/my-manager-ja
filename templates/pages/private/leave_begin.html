@@ -1,0 +1,58 @@
+{% extends '_base.html' %}
+
+{% block title %}退席を記録する｜{{ site_title }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a class="text-info text-decoration-none" href="{% url 'home' %}">&lt; ホームに戻る</a>
+</div>
+
+<h1>退席を記録する</h1>
+
+<br>
+
+<div class="mb-4">
+  <div class="card">
+    <div class="card-header">
+      {{ today }}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title text-success">作業中</h5>
+      <p class="card-text">現在あなたは出席している状況です。<br>退席を記録するには下のボタンを押してください。</p>
+      <a class="btn btn-primary" onclick="open_record_window();">記録を行う</a>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4 mb-4">
+  <div class="alert alert-warning" role="alert">場合によっては記録ボタンを押してから最後のステップが完了するまでに時間がかかることがあります。<br>その場合、完了画面が表示された時点での時刻が退席時刻として記録されます。</div>
+</div>
+
+{% if ask_questions_when_entering_and_leaving %}
+<div class="mt-4">
+  <div class="alert alert-success" role="alert">
+    <h5 class="alert-heading my-2">記録時の質問について</h5>
+    <p>記録を行う前にいくつか質問をする場合があります。<br>
+      その質問の回答内容はあなたのメンタルの状態を分析するために使用されます。<br>
+      ※システムには以下の情報が保存され、その他の情報は全て破棄されます。<br>
+      　・メンタルスコア（選択型質問の回答内容をもとに算出される数値・ランク）<br>
+      　・統計情報（個人を特定できない情報）<br>
+      　・組織が独自で追加した入力型質問の回答内容</p>
+    <hr>
+    <p class="mb-0">ヒント｜これまでに蓄積したデータは<a href="{% url 's_my_report' %}" class="alert-link">レポート</a>として確認することができます。</p>
+  </div>
+</div>
+{% endif %}
+{% endblock content %}
+
+{% block javascript %}
+{{ block.super}}
+<script>
+  function open_record_window() {
+    window.open("{% url 's_leave' %}", 'noopener=yes');
+  }
+  function move_to_home() {
+    window.location.href = "{% url 'home' %}";
+  }
+</script>
+{% endblock %}

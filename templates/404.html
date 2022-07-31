@@ -1,7 +1,13 @@
 {% extends '_base.html' %}
 
-{% block title %}404 Page not found{% endblock %}
+{% comment %}{% block title %}404 Page not found{% endblock %}{% endcomment %}
+{% block title %}404 ページが見つかりません{% endblock %}
 
 {% block content %}
-<h1>Page not found</h1>
+<!-- <h1>404 Page not found</h1> -->
+<h1>404 ページが見つかりません</h1>
+
+<br>
+
+<p>指定されたページが見つかりませんでした。<br>URLが誤っていない場合はページが削除された可能性があります。</p>
 {% endblock content %}

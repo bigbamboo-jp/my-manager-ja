@@ -1,0 +1,165 @@
+{% extends '_base.html' %}
+
+{% block title %}記録帳｜{{ site_title }}{% endblock %}
+
+{% block css %}
+{{ block.super}}
+<style type="text/css">
+  #scroll-to-top-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    height: 50px;
+    width: 50px;
+    font-size: 32px;
+    font-weight: 900;
+    border: none;
+    border-radius: 50%;
+    opacity: 0;
+    transition-duration: 0.5s;
+    outline: none;
+  }
+
+  #accordionExample .btn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 transparent;
+  }
+
+  #accordionExample .card-header button[data-toggle="collapse"].collapsed::after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: "\f103";
+    /* angle-double-down */
+    float: right;
+  }
+
+  #accordionExample .card-header button[data-toggle="collapse"]::after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: "\f102";
+    /* angle-double-up */
+    float: right;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a class="text-info text-decoration-none" href="{% url 'home' %}">&lt; ホームに戻る</a>
+</div>
+
+<h1 class="mb-0">{{ user.full_name }}さんの出席記録</h1>
+
+<br>
+
+<div>
+  <div class="mt-0 mb-4">
+    <div>
+      <a class="text-primary font-weight-bold btn" href="javascript:void(0)" onclick="show_this_month();"
+        style="text-align:left;">今月の記録を表示</a>
+    </div>
+    <a id="previous_month_link" class="text-primary font-weight-bold btn" href="javascript:void(0)"
+      onclick="show_previous_month();" style="text-align:left;">&lt; 前の月</a>
+    <a id="next_month_link" class="text-primary font-weight-bold btn" href="javascript:void(0)"
+      onclick="show_next_month();" style="float:right;">次の月 &gt;</a>
+  </div>
+  <h2>{{ target_date|date:"Y年M" }}</h2>
+  <div class="my-4">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="mb-3">統計データ</h4>
+        {% if attendance_times == 0 %}
+        <p>この月は一度も出席していません。</p>
+        {% else %}
+        <p class="mb-0">この月は{{ attendance_days }}日にわたって{{ attendance_times }}回出席しました。{% if total_working_time != 0.0 %}
+          総作業時間は{{ total_working_time }}時間です（1日あたり{{ average_working_time }}時間）。{% endif %}</p>
+        {% if mental_rank_statistics|length > 0 %}
+        <p class="font-weight-bold mt-2 mb-1">メンタルランク</p>
+        <p class="my-0">
+          {% for key, value in mental_rank_statistics.items %}
+          {{ key }}：{{ value }}個　　
+          {% endfor %}
+        </p>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% if attendance_times != 0 %}
+  <table class="table table-bordered mb-4">
+    <tr>
+      <th>日付</th>
+      <th>曜日</th>
+      <th colspan="2">入室時の時刻／メンタル</th>
+      <th colspan="2">退室時の時刻／メンタル</th>
+      <th>作業時間</th>
+      <th>備考</th>
+    </tr>
+    {% for attendance_information in all_attendance_information %}
+    <tr>
+      <td>{{ attendance_information.0|date:"Y/m/d" }}</td>
+      <td>{{ attendance_information.1 }}</td>
+      <td>{{ attendance_information.2|date:"G時i分s秒" }}</td>
+      <td>{{ attendance_information.3 }}</td>
+      <td>{{ attendance_information.4|date:"G時i分s秒" }}</td>
+      <td>{{ attendance_information.5 }}</td>
+      {% if attendance_information.6 == None %}
+      <td></td>
+      {% else %}
+      <td>{{ attendance_information.6 }}</td>
+      {% endif %}
+      <td>{{ attendance_information.7 | linebreaks }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</div>
+
+<div>
+  <button id="scroll-to-top-btn" class="bg-secondary text-white">↑</button>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+{{ block.super}}
+<script>
+  var months_to_go_back = 12;
+  function show_previous_month() {
+    if (page_number < months_to_go_back) {
+      window.location.href = location.protocol + '//' + location.host + location.pathname + '?page=' + String(page_number + 1);
+    }
+  }
+  function show_this_month() {
+    window.location.href = location.protocol + '//' + location.host + location.pathname + '?page=1';
+  }
+  function show_next_month() {
+    if (page_number > 1) {
+      window.location.href = location.protocol + '//' + location.host + location.pathname + '?page=' + String(page_number - 1);
+    }
+  }
+  var page_number = Number(new URL(location.href).searchParams.get('page'));
+  if (page_number > (months_to_go_back - 1)) {
+    var previous_month_link = document.getElementById('previous_month_link');
+    previous_month_link.classList.add('disabled');
+  }
+  else if (page_number < 2) {
+    var next_month_link = document.getElementById('next_month_link');
+    next_month_link.classList.add('disabled');
+  }
+
+  var scroll_to_top_btn = document.querySelector('#scroll-to-top-btn');
+  scroll_to_top_btn.addEventListener('click', scroll_to_top);
+  function scroll_to_top() {
+    window.scroll({ top: 0, behavior: 'smooth' });
+  };
+  window.addEventListener('scroll', scroll_event);
+  function scroll_event() {
+    if (window.pageYOffset > 400) {
+      scroll_to_top_btn.style.opacity = '1';
+    }
+    else if (window.pageYOffset < 400) {
+      scroll_to_top_btn.style.opacity = '0';
+    }
+  };
+</script>
+{% endblock %}

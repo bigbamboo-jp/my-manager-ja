@@ -1,0 +1,174 @@
+{% extends '_base.html' %}
+
+{% block title %}マイレポート｜{{ site_title }}{% endblock %}
+
+{% block css %}
+{{ block.super}}
+<style type="text/css">
+  #scroll-to-top-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    height: 50px;
+    width: 50px;
+    font-size: 32px;
+    font-weight: 900;
+    border: none;
+    border-radius: 50%;
+    opacity: 0;
+    transition-duration: 0.5s;
+    outline: none;
+  }
+
+  #accordionExample .btn:focus {
+    outline: 0;
+    box-shadow: 0 0 0 transparent;
+  }
+
+  #accordionExample .card-header button[data-toggle="collapse"].collapsed::after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: "\f103";
+    /* angle-double-down */
+    float: right;
+  }
+
+  #accordionExample .card-header button[data-toggle="collapse"]::after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: "\f102";
+    /* angle-double-up */
+    float: right;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+  <a class="text-info text-decoration-none" href="{% url 'home' %}">&lt; ホームに戻る</a>
+</div>
+
+<h1>{{ user.full_name }}さんのアクティビティレポート</h1>
+
+<br>
+
+<div>
+  <h2>全体的な傾向</h2>
+  <p>
+  <h3>{{ general_comment.0 }}</h3>
+  <p>{{ general_comment.1 | linebreaks }}</p>
+  </p>
+  <p>※このレポートは毎日更新されるので、ときどきチェックしてみてください。</p>
+</div>
+
+<div class="my-2">
+  <h2>先週の出席状況</h2>
+  {% if last_week_attendance_times == 0 %}
+  <p>先週は1日も出席していません。</p>
+  {% else %}
+  {% if total_working_time == 0.0 %}
+  <p>先週は{{ last_week_attendance_days }}日出席しました。</p>
+  {% else %}
+  <p>先週は{{ last_week_attendance_days }}日で合計{{ total_working_time }}時間作業をしました。平均すると1日あたり{{ average_working_time }}時間です。
+  </p>
+  <img src="data:image/png;base64,{{ last_week_activity_graph | safe }}" class="img-fluid" style="width: 75%;">
+  {% endif %}
+  <div class="accordion mb-4" id="accordionExample" role="tablist">
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn btn-block bg-transparent text-left collapsed" type="button" data-toggle="collapse"
+            data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            出席記録（{{ last_week_attendance_times }}件）
+          </button>
+        </h5>
+      </div>
+      <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+        <div class="card-body p-0">
+          <table class="table table-bordered mb-0">
+            <tr>
+              <th>日付</th>
+              <th>曜日</th>
+              <th colspan="2">入室時の時刻／メンタル</th>
+              <th colspan="2">退室時の時刻／メンタル</th>
+              <th>作業時間</th>
+              <th>備考</th>
+            </tr>
+            {% for attendance_information in last_week_attendance_information %}
+            <tr>
+              <td>{{ attendance_information.0|date:"Y/m/d" }}</td>
+              <td>{{ attendance_information.1 }}</td>
+              <td>{{ attendance_information.2|date:"G時i分s秒" }}</td>
+              <td>{{ attendance_information.3 }}</td>
+              <td>{{ attendance_information.4|date:"G時i分s秒" }}</td>
+              <td>{{ attendance_information.5 }}</td>
+              {% if attendance_information.6 == None %}
+              <td></td>
+              {% else %}
+              <td>{{ attendance_information.6 }}</td>
+              {% endif %}
+              <td>{{ attendance_information.7 | linebreaks }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          <p class="m-2">ヒント｜その他の記録は<a href="{% url 's_view_records' %}?page=1">記録帳</a>から確認できます。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<div class="my-2">
+  <h2>メンタル偏差値</h2>
+  <p>
+    メンタル偏差値とはあなたが所属する集団の中であなたがどれくらい精神的に健康であるかを表す値です。<br>※値が大きいほど集団の中であなたのスコアが秀でていることになります。<br>メンタル偏差値は日々の質問への回答結果から算出されるメンタルスコアによって計算されています。
+  </p>
+  <h4>組織全体</h4>
+  {% if mental_deviation_values_organization_all.0 %}
+  {% for mental_deviation_value in mental_deviation_values_organization_all %}
+  <p>{{ mental_deviation_value.0 }}：{{ mental_deviation_value.1 }}</p>
+  {% endfor %}
+  {% else %}
+  <p>データ不足のため計算できませんでした。</p>
+  {% endif %}
+  {% if user_groups %}
+  <h4>グループ（{{ user_groups }}）内</h4>
+  {% if mental_deviation_values_limited_to_group.0 %}
+  {% for mental_deviation_value in mental_deviation_values_limited_to_group %}
+  <p>{{ mental_deviation_value.0 }}：{{ mental_deviation_value.1 }}</p>
+  {% endfor %}
+  {% else %}
+  <p>データ不足のため計算できませんでした。</p>
+  {% endif %}
+  {% endif %}
+  {% if mental_deviation_values_organization_all.0 %}
+  <img src="data:image/png;base64,{{ mental_score_normal_distribution_graph | safe }}" class="img-fluid"
+    style="width: 75%;">
+  {% endif %}
+</div>
+
+<div>
+  <button id="scroll-to-top-btn" class="bg-secondary text-white">↑</button>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+{{ block.super}}
+<script>
+  var scroll_to_top_btn = document.querySelector('#scroll-to-top-btn');
+  scroll_to_top_btn.addEventListener('click', scroll_to_top);
+  function scroll_to_top() {
+    window.scroll({ top: 0, behavior: 'smooth' });
+  };
+  window.addEventListener('scroll', scroll_event);
+  function scroll_event() {
+    if (window.pageYOffset > 400) {
+      scroll_to_top_btn.style.opacity = '1';
+    }
+    else if (window.pageYOffset < 400) {
+      scroll_to_top_btn.style.opacity = '0';
+    }
+  };
+</script>
+{% endblock %}

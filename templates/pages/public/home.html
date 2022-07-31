@@ -1,0 +1,79 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% block title %}{{ site_title }}{% endblock title %}
+
+{% block content %}
+<h1>{{ site_title }}</h1>
+
+<div class="pb-4"></div>
+
+<h3 class="mb-4">このすべてを１つの場所で</h3>
+<h5 class="mb-3">Example：従業員の勤怠管理に使用する場合</h5>
+<div class="card-deck mb-3">
+  <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">出勤・退勤の記録</h5>
+      <p class="card-text">毎朝タイムカードの場所に行って打刻をしていますか？<br>
+        このサイトを使えば会社内のどこに居ても出勤・退勤を記録することができます。
+        「タイムカードを失くした！」なんてことも起こりません。</p>
+    </div>
+  </div>
+  <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">記録の確認</h5>
+      <p class="card-text">仕事というのは１日の生活時間の多くを占めているのにも関わらず、ほとんどの人は１ヶ月前の勤務スケジュールを覚えていません。<br>
+        このサイトを使えば好きな端末で1年前までの勤務記録を確認できます。</p>
+    </div>
+  </div>
+  <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">心の健康診断</h5>
+      <p class="card-text">あなたは自分の精神状態を把握できていますか？<br>
+        一般的に労働というのは大きなストレスがかかるものです。<br>
+        このサイトでは出勤時と退勤時に簡単な質問をして、あなたの精神状態をあなたの代わりに分析します。</p>
+    </div>
+  </div>
+</div>
+
+<div class="card-deck mb-4">
+  <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">経費の削減</h5>
+      <p class="card-text">勤怠管理をIT化しましょう！<br>
+        サーバーを運用するだけでチーム全員の勤怠管理ができます。
+        タイムカードを使用する場合に比べて、遥かに経済的です。</p>
+    </div>
+  </div>
+  <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">データの収集を自動化</h5>
+      <p class="card-text">あなたのチームはタイムカードやノートに勤務記録を残していませんか？<br>
+        そしてそれを打ち込んで統計資料を作っていたりしませんか？<br>
+        このサイトを使えばそのような生産性のない作業から開放されます。</p>
+    </div>
+  </div>
+  <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">メンバーの精神状態を知る</h5>
+      <p class="card-text">あなたのチームのメンバーはみんな元気ですか？<br>
+        一見元気そうに見えるような人でも、実は精神的にかなり追い込まれている場合もあります。
+        このサイトではそのような人達がダウンしてしまう前に状況を把握する方法を提供します。</p>
+    </div>
+  </div>
+</div>
+
+<h3 class="mb-3">はじめてですか？</h3>
+<p class="lead mb-5">ユーザー登録はナビゲーションバーのボタンから行えます。<br>
+  その際、チームから指定されたユーザー名がある場合はそちらを入力して登録してください。<br>
+  ※ヘルプが必要な場合はシステム管理者にお問い合わせください。</p>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">このサイトはオープンソースです！</h5>
+    <p class="card-text">誰でもこのサイトのソースコードを使って新しいサイトを立ち上げることができます。<br>
+      詳しくは以下のプロジェクトページをご覧ください。</p>
+    <a href="https://github.com/google" class="card-link" target="_blank" rel="noopener noreferrer">GitHub｜(プロジェクト名)</a>
+  </div>
+</div>
+{% endblock content %}

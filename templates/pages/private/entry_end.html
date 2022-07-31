@@ -1,0 +1,61 @@
+{% extends '_record_page_base.html' %}
+
+{% block title %}出席を記録する｜{{ site_title }}{% endblock %}
+
+{% block css %}
+{{ block.super}}
+<script>
+  {% if not request.session.entry_time and not request.session.entry_error_code %}
+  location.replace("{% url 's_entry' %}");
+  {% endif %}
+  window.onunload = function () {
+    var opener = window.opener;
+    if (opener != null) {
+      if (opener.location.pathname == '/s/entry_description') {
+        if (new URL(location.href).searchParams.get('finished') == '1') {
+          opener.move_to_home();
+        }
+      }
+    }
+  }
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>出席を記録する</h1>
+
+<br>
+
+<div class="mb-4">
+  <div class="card">
+    <div class="card-body">
+      {% if succeeded == True %}
+      <h4 class="mb-2">記録完了</h4>
+      <p class="mb-2">出席の記録が完了しました。<br>作業時間を確定させるために、退席の記録についても忘れずに行ってください。</p>
+      <p class="text-secondary">出席日時：{{ request.session.entry_time }}</p>
+      {% else %}
+      <h4 class="mb-2">記録失敗</h4>
+      <p class="mb-2">出席の記録に失敗しました。<br>もう一度やり直してください。</p>
+      <p class="text-secondary">エラーコード：{{ request.session.entry_error_code }}</p>
+      {% endif %}
+      <input type="button" value="OK" class="btn btn-primary" style="width: 4rem;" onclick="close_page();">
+    </div>
+  </div>
+</div>
+
+{% if ask_questions_when_entering_and_leaving %}
+<div class="mt-4">
+  <div class="alert alert-success" role="alert">
+    <h5 class="alert-heading my-2">記録時の質問について</h5>
+    <p>記録を行う前にいくつか質問をする場合があります。<br>
+      その質問の回答内容はあなたのメンタルの状態を分析するために使用されます。<br>
+      ※システムには以下の情報が保存され、その他の情報は全て破棄されます。<br>
+      　・メンタルスコア（選択型質問の回答内容をもとに算出される数値・ランク）<br>
+      　・統計情報（個人を特定できない情報）<br>
+      　・組織が独自で追加した入力型質問の回答内容</p>
+    <hr>
+    <p class="mb-0">ヒント｜これまでに蓄積したデータは<a href="{% url 's_my_report' %}" class="alert-link" style="pointer-events: none;">レポート</a>として確認することができます。</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
