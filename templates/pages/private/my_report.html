@@ -69,8 +69,7 @@
   {% if total_working_time == 0.0 %}
   <p>先週は{{ last_week_attendance_days }}日出席しました。</p>
   {% else %}
-  <p>先週は{{ last_week_attendance_days }}日で合計{{ total_working_time }}時間作業をしました。平均すると1日あたり{{ average_working_time }}時間です。
-  </p>
+  <p>先週は{{ last_week_attendance_days }}日で合計{{ total_working_time }}時間作業をしました。{% if last_week_attendance_days != 1 %}平均すると1日あたり{{ average_working_time }}時間です。{% endif %}</p>
   <img src="data:image/png;base64,{{ last_week_activity_graph | safe }}" class="img-fluid" style="width: 75%;">
   {% endif %}
   <div class="accordion mb-4" id="accordionExample" role="tablist">

@@ -298,11 +298,17 @@ def generate_mental_score_normal_distribution_graph(request) -> str:
         previous_day_all_records_in_group = AttendanceRecord.objects.filter(entry_time__date=previous_day_records_user[0].entry_time.date(), user__groups__in=main_user.groups.all()).exclude(leave_time=None)
     mental_scores_organization_all = []
     for record in previous_day_records_organization_all:
-        mental_scores_organization_all.append(record.mental_score_at_entry + record.mental_score_at_leave)
+        if record.mental_score_at_entry is None or record.mental_score_at_leave is None:
+            mental_scores_organization_all.append(np.nan)
+        else:
+            mental_scores_organization_all.append(record.mental_score_at_entry + record.mental_score_at_leave)
     if previous_day_all_records_in_group.exists() == True:
         mental_scores_in_group = []
         for record in previous_day_all_records_in_group:
-            mental_scores_in_group.append(record.mental_score_at_entry + record.mental_score_at_leave)
+            if record.mental_score_at_entry is None or record.mental_score_at_leave is None:
+                mental_scores_in_group.append(np.nan)
+            else:
+                mental_scores_in_group.append(record.mental_score_at_entry + record.mental_score_at_leave)
     mental_scores_organization_all = np.array(mental_scores_organization_all)
     if previous_day_all_records_in_group.exists() == True:
         mental_scores_in_group = np.array(mental_scores_in_group)
@@ -325,7 +331,11 @@ def generate_mental_score_normal_distribution_graph(request) -> str:
         pd = np.concatenate([pd_organization_all, pd_in_group])
     else:
         pd = pd_organization_all
-    ax.vlines(previous_day_records_user[0].mental_score_at_entry + previous_day_records_user[0].mental_score_at_leave, 0, np.nanmax(pd), linestyles='dotted', label='{}さんのスコア'.format(main_user.full_name))
+    if previous_day_records_user[0].mental_score_at_entry is None or previous_day_records_user[0].mental_score_at_leave is None:
+        previous_day_records_user_0_mental_score = np.nan
+    else:
+        previous_day_records_user_0_mental_score = previous_day_records_user[0].mental_score_at_entry + previous_day_records_user[0].mental_score_at_leave
+    ax.vlines(previous_day_records_user_0_mental_score, 0, np.nanmax(pd), linestyles='dotted', label='{}さんのスコア'.format(main_user.full_name))
     ax.yaxis.set_major_formatter(ticker.PercentFormatter(xmax=1))
     ax.tick_params(labelsize=10)
     ax.set_title('メンタルスコアの正規分布グラフ（{}のデータ）'.format(data_condition_used[0]), fontsize=14)

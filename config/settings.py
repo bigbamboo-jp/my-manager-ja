@@ -36,7 +36,7 @@ LINK_WITH_AIRTABLE = False
 AIRTABLE_API_KEY = ''
 AIRTABLE_BASE_ID = ''
 AIRTABLE_USER_TABLE_NAME = 'Users'
-AIRTABLE_USER_TABLE_COLUMNS = {'username': 'User Name', }
+AIRTABLE_USER_TABLE_COLUMNS = {'username': 'User ID', }
 AIRTABLE_ATTENDANCE_RECORD_TABLE_NAME = 'Attendance Records'
 AIRTABLE_ATTENDANCE_RECORD_TABLE_COLUMNS = {'user': 'User', 'entry_time': 'Entry Time', 'leave_time': 'Leave Time', 'mental_score_at_entry': 'Entry: Mental Score', 'mental_score_at_leave': 'Leave: Mental Score', 'mental_rank_at_entry': 'Entry: Mental Rank', 'mental_rank_at_leave': 'Leave: Mental Rank', 'notes': 'Notes'}
 

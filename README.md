@@ -5,8 +5,7 @@
 
 ## アプリケーションの種類について
 マイマネージャーはPythonで実装されたWebアプリケーションフレームワークのDjangoを基盤にしたウェブアプリです。  
-プログラムファイルをダウンロードして任意のサーバーで実行するだけで、インターネットやローカルネットワーク上で簡単にウェブベースのサービスを立ち上げることができます。  
-※Djangoについて、詳しくは[こちら](https://www.djangoproject.com/start/overview/)をご覧ください。
+プログラムファイルをダウンロードして任意のサーバーで実行するだけで、インターネットやローカルネットワーク上で簡単にウェブベースのサービスを立ち上げることができます。
 ## このアプリケーションでできること
 - ウェブブラウザから出席時・退席時に打刻をする
 - 自分の過去1年間の出席記録を確認する
@@ -18,7 +17,11 @@
 **前提条件：Python 3.10以上、PostgreSQL 14以上がインストール済み**
 1. 下のリンクから最新のプログラムをダウンロードしてそれを解凍してください。  
 [https://github.com/bigbamboo-jp/my-manager-ja/releases](https://github.com/bigbamboo-jp/my-manager-ja/releases)
-1. config/`settings.py`にデータベース（PostgreSQL）とAirtable（オプション）の認証情報を書き込んでください。
+1. config/`settings.py`にデータベース（PostgreSQL）とAirtable（オプション）の認証情報を書き込んでください。  
+    **Airtableとの連携について**  
+    このアプリケーションでAirtableのベースを読み書きするにはテーブル名・列名の設定も行う必要があります。  
+    ※以下のリンク先のテンプレートを使用する場合は設定不要です（Copy base ボタンを押すとコピーできます）。  
+    [https://airtable.com/shrRCYwNlHhpOvfbw](https://airtable.com/shrRCYwNlHhpOvfbw)
 1. `manage.py`があるディレクトリで以下のコマンドを実行してください。
     ```
     # Windows or macOS
