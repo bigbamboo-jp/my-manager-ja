@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECRET_KEY
 # 再生成関数：django.core.management.utils.get_random_secret_key()
 # セキュリティフラグ：未変更
-SECRET_KEY = '43)%4yx)aa@a=+_c(fn&kf3g29xax+=+a&key9i=!98zyim=8j'
+SECRET_KEY = 'django-insecure-0peo@#x9jur3!h$ryje!$879xww8y1y66jx!%*#ymhg&jkozs2'
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
