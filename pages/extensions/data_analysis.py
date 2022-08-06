@@ -108,7 +108,7 @@ def get_general_comment(request) -> list:
 
 def evaluate_score(score: float) -> list:
     if np.isnan(score) == True:
-        return ['Unknown...', '先週のメンタル情報がないため、傾向を分析できません。']
+        return ['Unknown...', '先週のメンタルデータがないため、傾向を分析できません。']
     else:
         if score <= 0.0:
             return ['Not so good...', 'あんまり良くないです。\n作業量を減らすなどして、精神的な負担を減らしましょう。']
@@ -210,9 +210,9 @@ def generate_last_week_activity_graph(request) -> str:
     return output_graph(fig)
 
 
-def output_graph():
+def output_graph(figure: plt.Figure) -> str:
     buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', dpi=200)
+    figure.savefig(buffer, format='png', dpi=200)
     buffer.seek(0)
     img = buffer.getvalue()
     graph = base64.b64encode(img)

@@ -25,6 +25,7 @@ def site_information(request):
 @api_view(['GET'])
 def user_profile(request):
     context = {
+        'username': request.user.username,  # str
         'first_name': request.user.first_name,  # str
         'last_name': request.user.last_name,  # str
         'full_name_template': r'${last_name} ${first_name}',  # str
