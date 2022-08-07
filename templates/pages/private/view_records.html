@@ -103,7 +103,7 @@
       <td>{{ attendance_information.3 }}</td>
       <td>{{ attendance_information.4|date:"G時i分s秒" }}</td>
       <td>{{ attendance_information.5 }}</td>
-      {% if attendance_information.6 == None %}
+      {% if attendance_information.6 is None %}
       <td></td>
       {% else %}
       <td>{{ attendance_information.6 }}</td>

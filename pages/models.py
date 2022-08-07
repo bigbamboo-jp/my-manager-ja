@@ -25,7 +25,7 @@ class AttendanceRecord(models.Model):
 
     def __str__(self) -> str:
         label = self.user.full_name + '｜' + self.entry_time.strftime('%Y/%m/%d') + '｜' + self.entry_time.strftime('%H:%M') + '～'
-        if self.leave_time != None:
+        if self.leave_time is not None:
             label += self.leave_time.strftime('%H:%M')
         return label
 

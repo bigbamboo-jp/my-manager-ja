@@ -92,7 +92,7 @@ def entry(request):
             return redirect('home')
         signer = TimestampSigner()
         json_data = request.COOKIES.get('entry_data')
-        if json_data == None:
+        if json_data is None:
             entry_data = {}
             request.session['record_data_encryption_key'] = signer.sign(default_token_generator.make_token(request.user))
         else:
@@ -128,7 +128,7 @@ def leave(request):
             return redirect('home')
         signer = TimestampSigner()
         json_data = request.COOKIES.get('leave_data')
-        if json_data == None:
+        if json_data is None:
             leave_data = {}
             request.session['record_data_encryption_key'] = signer.sign(default_token_generator.make_token(request.user))
         else:

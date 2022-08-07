@@ -17,7 +17,7 @@
       <p>記録をする前にデータの入力を行ってください。</p>
       <hr>
       <h4 class="my-1">データ入力｜{{ question.content }}</h4>
-      {% if question.description != None %}
+      {% if question.description is not None %}
       <p>{{ question.description | linebreaks }}</p>
       {% endif %}
       <form>

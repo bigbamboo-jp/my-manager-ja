@@ -3,7 +3,6 @@ import datetime
 from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponse
 from django.core.signing import TimestampSigner
 from django.shortcuts import redirect, render
@@ -51,19 +50,24 @@ def issue_tokens(request):
     else:
         signer = TimestampSigner()
         if request.method == 'GET':
-            if 'issue_tokens_transaction_id' in request.session:
-                if request.GET['tr'] == request.session['issue_tokens_transaction_id']:
-                    token = signer.unsign(request.session['issue_tokens_transaction_id'], max_age=datetime.timedelta(minutes=10))
-                    if default_token_generator.check_token(request.user, token) == True:
+            try:
+                if 'issue_tokens_transaction_id' in request.session and 'tr' in request.GET:
+                    if request.session['issue_tokens_transaction_id'] == request.GET['tr']:
                         del request.session['issue_tokens_transaction_id']
-                    refresh_token = RefreshToken.for_user(request.user)
-                    access_token = refresh_token.access_token
-                    redirect_url = reverse('issue_tokens')
-                    return redirect(redirect_url + '?finished=1&access=' + str(access_token) + '&refresh=' + str(refresh_token))
+                        token = signer.unsign(request.GET['tr'], max_age=datetime.timedelta(minutes=10))
+                        if token != str(request.user.pk):
+                            raise Exception()
+                        refresh_token = RefreshToken.for_user(request.user)
+                        access_token = refresh_token.access_token
+                        redirect_url = reverse('issue_tokens')
+                        return redirect(redirect_url + '?finished=1&access=' + str(access_token) + '&refresh=' + str(refresh_token))
+            except Exception as e:
+                # raise e
+                pass
         elif request.method == 'POST':
             request_user = request.user
             logout(request)
-            request.session['issue_tokens_transaction_id'] = signer.sign(default_token_generator.make_token(request_user))
+            request.session['issue_tokens_transaction_id'] = signer.sign(str(request_user.pk))
             redirect_url = reverse('issue_tokens')
             return redirect(redirect_url + '?tr=' + request.session['issue_tokens_transaction_id'])
         return render(request, 'account/issue_tokens.html')

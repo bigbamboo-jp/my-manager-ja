@@ -97,7 +97,7 @@ def get_general_comment(request) -> list:
         last_week_mental_scores_at_leave = last_week_attendance_records.values_list('mental_score_at_leave', flat=True)
         mental_scores = []
         for i in range(len(last_week_mental_scores_at_entry)):
-            if last_week_mental_scores_at_entry[i] != None and last_week_mental_scores_at_leave[i] != None:
+            if last_week_mental_scores_at_entry[i] is not None and last_week_mental_scores_at_leave[i] is not None:
                 mental_scores.append(last_week_mental_scores_at_entry[i] + last_week_mental_scores_at_leave[i])
             else:
                 mental_scores.append(np.nan)
@@ -147,7 +147,7 @@ def collect_attendance_information(request, first_date: datetime.date, last_date
                     attendance_days -= 1
                     break
         attendance_information.extend([record.entry_time.time(), record.mental_rank_at_entry])
-        if record.leave_time == None:
+        if record.leave_time is None:
             attendance_information.extend([None, '', None])
         else:
             attendance_information.extend([record.leave_time.time(), record.mental_rank_at_leave, str(record.leave_time - record.entry_time)])
@@ -171,7 +171,7 @@ def generate_last_week_activity_graph(request) -> str:
         return output_graph(plt.figure())
     last_week_activity = [[0.0, 0.0] for _ in range(7)]
     for record in last_week_attendance_records:
-        if record.mental_score_at_entry != None and record.mental_score_at_leave != None:
+        if record.mental_score_at_entry is not None and record.mental_score_at_leave is not None:
             mental_score = record.mental_score_at_entry + record.mental_score_at_leave
         else:
             mental_score = np.nan
@@ -235,11 +235,11 @@ def calculate_mental_deviation_values(request, in_group: bool) -> list:
             mental_scores_at_leave = record_data[1].values_list('mental_score_at_leave', flat=True)
             mental_scores = []
             for i in range(len(mental_scores_at_entry)):
-                if mental_scores_at_entry[i] != None and mental_scores_at_leave[i] != None:
+                if mental_scores_at_entry[i] is not None and mental_scores_at_leave[i] is not None:
                     mental_scores.append(mental_scores_at_entry[i] + mental_scores_at_leave[i])
                 else:
                     mental_scores.append(np.nan)
-            if record_data[0].mental_score_at_entry != None and record_data[0].mental_score_at_leave != None:
+            if record_data[0].mental_score_at_entry is not None and record_data[0].mental_score_at_leave is not None:
                 user_mental_score = record_data[0].mental_score_at_entry + record_data[0].mental_score_at_leave
             else:
                 user_mental_score = np.nan

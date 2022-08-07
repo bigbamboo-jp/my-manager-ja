@@ -32,7 +32,7 @@ def entry_communication(request, entry_data: dict) -> HttpResponse:
         entry_data['question_order'] = list(entry_data['questions'].keys())
         entry_data['confirmed'] = False
     entry_data, context = process_questions(entry_data)
-    if context == None or ASK_QUESTIONS_WHEN_ENTERING_AND_LEAVING == False:
+    if context is None or ASK_QUESTIONS_WHEN_ENTERING_AND_LEAVING == False:
         if entry_data['confirmed'] == True:
             if 'leave_time' in request.session:
                 del request.session['leave_time']
@@ -64,7 +64,7 @@ def leave_communication(request, leave_data: dict) -> HttpResponse:
         leave_data['question_order'] = list(leave_data['questions'].keys())
         leave_data['confirmed'] = False
     leave_data, context = process_questions(leave_data)
-    if context == None or ASK_QUESTIONS_WHEN_ENTERING_AND_LEAVING == False:
+    if context is None or ASK_QUESTIONS_WHEN_ENTERING_AND_LEAVING == False:
         if leave_data['confirmed'] == True:
             if 'entry_time' in request.session:
                 del request.session['entry_time']
@@ -131,7 +131,7 @@ def get_question_information(question: Question) -> dict:
 def process_questions(entry_data: dict) -> tuple:
     if 'question_number' in entry_data:
         redo = True
-        if entry_data['questions'][entry_data['question_order'][0]] != None:
+        if entry_data['questions'][entry_data['question_order'][0]] is not None:
             if entry_data['questions'][entry_data['question_order'][0]][0] != '':
                 redo = False
         if redo == True:
@@ -144,7 +144,8 @@ def process_questions(entry_data: dict) -> tuple:
             user_choice_pk = entry_data['questions'][last_question_pk][0]
             user_choice = Option.objects.get(pk=user_choice_pk)
             if user_choice.effect.startswith('#goto#') == True:
-                entry_data['question_order'].insert(0, user_choice.effect[6:])
+                entry_data['questions'][user_choice.effect.strip()[6:]] = None
+                entry_data['question_order'].insert(0, user_choice.effect.strip()[6:])
                 if (next_question := ChoiceQuestion.objects.filter(pk=int(entry_data['question_order'][0]))).exists() == True:
                     entry_data['question_number'] = 'C' + entry_data['question_order'][0]
                 elif (next_question := InputQuestion.objects.filter(pk=int(entry_data['question_order'][0]))).exists() == True:
@@ -152,10 +153,10 @@ def process_questions(entry_data: dict) -> tuple:
                 return entry_data, get_question_information(next_question[0])
             elif user_choice.effect.startswith('#score#') == True:
                 if 'score' in entry_data:
-                    entry_data['score'] = str(int(entry_data['score']) + int(user_choice.effect[7:]))
+                    entry_data['score'] = str(int(entry_data['score']) + int(user_choice.effect.strip()[7:]))
                 else:
-                    entry_data['score'] = user_choice.effect[7:]
-            if (required_time := entry_data['questions'][last_question_pk][1]) != None:
+                    entry_data['score'] = user_choice.effect.strip()[7:]
+            if (required_time := entry_data['questions'][last_question_pk][1]) is not None:
                 required_time = int(required_time)
             if 'score' in entry_data:
                 entry_data['score'] = str(int(entry_data['score']) + evaluate_performance(last_question[0], required_time))
@@ -186,7 +187,7 @@ def process_questions(entry_data: dict) -> tuple:
 
 
 def evaluate_performance(question: Question, required_time: int) -> int:
-    if required_time == None:
+    if required_time is None:
         return 0
     else:
         if required_time < 0 or required_time > 1000 * 30:
@@ -245,7 +246,7 @@ def process_answer_data(request, entry_data: dict, situation: int) -> tuple:
                             airtable_user_table = pyairtable.Table(settings.AIRTABLE_API_KEY, settings.AIRTABLE_BASE_ID, settings.AIRTABLE_USER_TABLE_NAME)
                             airtable_user_table_columns = settings.AIRTABLE_USER_TABLE_COLUMNS
                             airtable_user_record = airtable_user_table.first(formula=pyairtable.formulas.match({airtable_user_table_columns['username']: request.user.username}))
-                            if airtable_user_record == None:
+                            if airtable_user_record is None:
                                 raise OtherServiceHaveNoUserError()
                             request.user.other_service_id = airtable_user_record['id']
                             request.user.save()
@@ -326,7 +327,7 @@ def process_answer_data(request, entry_data: dict, situation: int) -> tuple:
 def rank_score(score: float) -> str:
     if type(unique_rank := customize_assistant(lambda score=score: rank_score_uniquely(score))) == str:
         return unique_rank
-    if score == None:
+    if score is None:
         return '－'
     else:
         if score <= 0.0:
