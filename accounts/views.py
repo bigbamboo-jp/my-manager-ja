@@ -54,8 +54,8 @@ def issue_tokens(request):
                 if 'issue_tokens_transaction_id' in request.session and 'tr' in request.GET:
                     if request.session['issue_tokens_transaction_id'] == request.GET['tr']:
                         del request.session['issue_tokens_transaction_id']
-                        token = signer.unsign(request.GET['tr'], max_age=datetime.timedelta(minutes=10))
-                        if token != str(request.user.pk):
+                        token = signer.unsign_object(request.GET['tr'], max_age=datetime.timedelta(minutes=5))
+                        if token != request.user.pk:
                             raise Exception()
                         refresh_token = RefreshToken.for_user(request.user)
                         access_token = refresh_token.access_token
@@ -67,7 +67,7 @@ def issue_tokens(request):
         elif request.method == 'POST':
             request_user = request.user
             logout(request)
-            request.session['issue_tokens_transaction_id'] = signer.sign(str(request_user.pk))
+            request.session['issue_tokens_transaction_id'] = signer.sign_object(request_user.pk)
             redirect_url = reverse('issue_tokens')
             return redirect(redirect_url + '?tr=' + request.session['issue_tokens_transaction_id'])
         return render(request, 'account/issue_tokens.html')
