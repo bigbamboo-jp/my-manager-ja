@@ -142,7 +142,9 @@ def process_questions(entry_data: dict) -> tuple:
         last_question_pk = entry_data['question_order'].pop(0)
         if (last_question := ChoiceQuestion.objects.filter(pk=int(last_question_pk))).exists() == True:
             user_choice_pk = entry_data['questions'][last_question_pk][0]
-            user_choice = Option.objects.get(pk=user_choice_pk)
+            if int(user_choice_pk) not in last_question[0].options:
+                raise Exception()
+            user_choice = Option.objects.get(pk=int(user_choice_pk))
             if user_choice.effect.startswith('#goto#') == True:
                 entry_data['questions'][user_choice.effect.strip()[6:]] = None
                 entry_data['question_order'].insert(0, user_choice.effect.strip()[6:])
