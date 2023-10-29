@@ -24,8 +24,9 @@ def user_information_change(request):
         else:
             form = LimitedUserChangeForm(request.POST, instance=request.user)
         changed = None
+        request_user_username_cache = request.user.username
         if form.is_valid():
-            if form.changed_data == []:
+            if form.changed_data == [] or (type(form) == LimitedUserChangeForm and form.cleaned_data['username'] != request_user_username_cache):
                 changed = False
             else:
                 form.save()

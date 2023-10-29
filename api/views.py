@@ -43,16 +43,16 @@ def todays_entry_status(request):
         status = 1
         last_entry_time = None
     else:
-        latest_entry_record_today = latest_entry_record_today.filter(leave_time=None)
         if len(latest_entry_record_today) == 1:
-            status = -1
-            last_entry_time = make_aware(latest_entry_record_today.order_by('-entry_time').first().entry_time).isoformat()
-        elif len(latest_entry_record_today) > 1:
+            if latest_entry_record_today.first().leave_time == None:
+                status = -1
+                last_entry_time = make_aware(latest_entry_record_today.first().entry_time).isoformat()
+            else:
+                status = 2
+                last_entry_time = None
+        else:
             status = -2
             last_entry_time = make_aware(latest_entry_record_today.order_by('-entry_time').first().entry_time).isoformat()
-        else:
-            status = 2
-            last_entry_time = None
     context = {
         'status': status,  # int
         'last_entry_time': last_entry_time,  # str

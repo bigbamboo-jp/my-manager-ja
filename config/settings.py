@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'crispy_forms',
+    'crispy_bootstrap4',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -81,6 +82,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 # URLS
@@ -245,6 +247,6 @@ SHOW_TERMS_OF_USE = True
 SHOW_PRIVACY_POLICY = True
 ASK_QUESTIONS_WHEN_ENTERING_AND_LEAVING = True
 OPEN_USER_REGISTRATION = True
-ALLOW_USER_TO_CHANGE_USERNAME = True
+ALLOW_USER_TO_CHANGE_USERNAME = False
 AUTO_VERIFY_EMAIL_ADDRESS_ON_PASSWORD_RESET = True
 RECORD_COOKIE_SECURE = False

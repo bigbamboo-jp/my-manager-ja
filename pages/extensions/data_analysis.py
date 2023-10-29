@@ -3,7 +3,6 @@ import calendar
 import datetime
 import io
 import locale
-import warnings
 
 import dateutil.relativedelta
 import japanize_matplotlib
@@ -24,7 +23,6 @@ locale.setlocale(locale.LC_TIME, 'ja_JP')
 plt.switch_backend('agg')
 mplstyle.use('fast')
 japanize_matplotlib.__name__
-warnings.simplefilter('ignore', (RuntimeWarning, UserWarning))
 
 
 def get_last_week_date(date, target_weekday) -> datetime.date:
@@ -101,7 +99,10 @@ def get_general_comment(request) -> list:
                 mental_scores.append(last_week_mental_scores_at_entry[i] + last_week_mental_scores_at_leave[i])
             else:
                 mental_scores.append(np.nan)
-        average_mental_score = float(np.mean(np.array(mental_scores)))
+        if mental_scores == []:
+            average_mental_score = np.nan
+        else:
+            average_mental_score = float(np.mean(np.array(mental_scores)))
     general_comment = evaluate_score(average_mental_score)
     return general_comment
 
